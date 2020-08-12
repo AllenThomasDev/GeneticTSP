@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import pprint as pp
 class City:
     def __init__(self,x=None,y=None):
         if [x,y] != [None,None]:
@@ -37,7 +38,7 @@ class Fitness:
 
     def routeFitness(self):
         if self.fitness == 0:
-            self.fitness = float(self.routeDistance())
+            self.fitness = 1/float(self.routeDistance())
         return self.fitness
 
 
@@ -51,12 +52,15 @@ def createRoute(cityList):
     route = random.sample(cityList, len(cityList))
     return route
 
-cityList=generateCities(50)
-print(Fitness(createRoute(cityList)).routeFitness())
-print(Fitness(createRoute(cityList)).routeFitness())
-print(Fitness(createRoute(cityList)).routeFitness())
-print(Fitness(createRoute(cityList)).routeFitness())
-print(Fitness(createRoute(cityList)).routeFitness())
-print(Fitness(createRoute(cityList)).routeFitness())
-print(Fitness(createRoute(cityList)).routeFitness())
+def initialPopulation(popSize, cityList):
+    population = []
+    for i in range(0, popSize):
+        population.append(createRoute(cityList))
+    return population
 
+def rankRoutes(population):
+    fitnessScores={}
+    for x in range(len(population)):
+        fitnessScores[x]=Fitness(population[x]).routeFitness()
+    return sorted(fitnessScores.items(), key=lambda x: x[1],reverse=True)
+print(rankRoutes(initialPopulation(5,generateCities(6))))
